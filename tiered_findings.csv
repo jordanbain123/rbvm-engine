@@ -1,0 +1,5 @@
+tier,finding,cve,cvss,epss,kev,sla,reason
+1,SSL v3 POODLE,CVE-2014-3566,9.8,1.0,no,24-48 hours,EPSS 100.00% >= 90%
+1,WinVerifyTrust signature validation,CVE-2013-3900,8.8,0.4465,yes,24-48 hours,On CISA KEV (actively exploited)
+2,Debian OpenSSL RNG weakness,CVE-2008-0166,10.0,0.7072,no,14 days,CVSS 10.0 >= 8.0 and EPSS 70.72% >= 10%
+3,Samba Badlock,CVE-2016-2118,7.5,0.3693,no,30-90 days,CVSS 7.5 >= 7.0

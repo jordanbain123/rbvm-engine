@@ -1,0 +1,5 @@
+finding,cve,cvss
+WinVerifyTrust signature validation,CVE-2013-3900,8.8
+Samba Badlock,CVE-2016-2118,7.5
+Debian OpenSSL RNG weakness,CVE-2008-0166,10.0
+SSL v3 POODLE,CVE-2014-3566,9.8
