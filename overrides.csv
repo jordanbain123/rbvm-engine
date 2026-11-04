@@ -1,0 +1,6 @@
+match,port,tier,reason,approved_by,review_by
+Possible Backdoor: Ingreslock,1524/tcp,1,Backdoor shell that gives root to anyone who connects. Scanner confirmed it,Jordan Bain,2026-12-04
+rlogin Passwordless Login,513/tcp,1,Remote root login with no password,Jordan Bain,2026-12-04
+Distributed Ruby (dRuby/DRb),8787/tcp,1,Scanner ran code on the host with no login,Jordan Bain,2026-12-04
+PostgreSQL Default Credentials,5432/tcp,1,Anyone can log into the database with postgres/postgres,Jordan Bain,2026-12-04
+Operating System (OS) End of Life,,1,Ubuntu 8.04 hasn't had patches since 2013. Need to decide fast whether to upgrade or isolate it or file an exception,Jordan Bain,2026-12-04
