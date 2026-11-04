@@ -1,3 +1,6 @@
 venv/
 __pycache__/
 .DS_Store
+tiered_findings.csv
+fix_plan.csv
+openvas_*.csv
