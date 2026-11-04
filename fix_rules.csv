@@ -1,0 +1,7 @@
+match,fix
+SSL/TLS:,"Disable SSLv2/v3, TLS 1.0/1.1 and weak ciphers on every service"
+rlogin,"Turn off the r-services (rsh, rlogin, rexec) in inetd and use SSH"
+rsh ,"Turn off the r-services (rsh, rlogin, rexec) in inetd and use SSH"
+rexec,"Turn off the r-services (rsh, rlogin, rexec) in inetd and use SSH"
+vsftpd,Replace the backdoored vsftpd 2.3.4 package
+Operating System (OS) End of Life,Upgrade off Ubuntu 8.04 or isolate the host and file a risk exception

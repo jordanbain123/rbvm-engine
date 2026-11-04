@@ -135,6 +135,49 @@ def apply_overrides(results, overrides):
     return len(used), unused
 
 
+def load_fix_rules(path="fix_rules.csv"):
+    if not os.path.exists(path):
+        return []
+    with open(path, newline="", encoding="utf-8") as f:
+        return [r for r in csv.DictReader(f)
+                if r.get("match", "").strip() and not r["match"].startswith("#")]
+
+
+def build_fix_plan(results, rules):
+    # one row per fix instead of one per finding. findings that match a rule
+    # roll up under that fix, everything else is grouped by its own name
+    # (which also merges the same finding showing up on two ports)
+    plan = {}
+    for r in results:
+        fix = r["finding"]
+        for rule in rules:
+            if rule["match"].strip().lower() in r["finding"].lower():
+                fix = rule["fix"]
+                break
+
+        g = plan.setdefault(fix, {"tier": 4, "findings": set(), "count": 0, "ports": set(), "kev": "no"})
+        g["tier"] = min(g["tier"], r["tier"])  # worst finding decides the tier
+        g["findings"].add(r["finding"])
+        g["count"] += 1
+        g["ports"].add(r["port"] or "-")
+        if r["kev"] == "yes":
+            g["kev"] = "yes"
+
+    rows = []
+    for fix, g in plan.items():
+        rows.append({
+            "tier": g["tier"],
+            "fix": fix,
+            "sla": SLA[g["tier"]],
+            "findings_closed": g["count"],
+            "distinct_issues": len(g["findings"]),
+            "ports": " ".join(sorted(g["ports"])),
+            "kev": g["kev"],
+        })
+    rows.sort(key=lambda r: (r["tier"], -r["findings_closed"]))
+    return rows
+
+
 def main():
     path = sys.argv[1] if len(sys.argv) > 1 else "findings.csv"
     findings = load_findings(path)
@@ -189,8 +232,22 @@ def main():
         writer.writerows(results)
     print("\nwrote tiered_findings.csv")
 
+    plan = build_fix_plan(results, load_fix_rules())
+    with open("fix_plan.csv", "w", newline="") as out:
+        writer = csv.DictWriter(out, fieldnames=list(plan[0].keys()))
+        writer.writeheader()
+        writer.writerows(plan)
+
+    print(f"\n{len(results)} findings come down to {len(plan)} fixes")
+    for t in (1, 2, 3, 4):
+        print(f"Tier {t}: {sum(p['tier'] == t for p in plan)} fixes")
+    print("\nTier 1 fixes:")
+    for p in plan:
+        if p["tier"] == 1:
+            print(f"  [{p['findings_closed']:>2} findings] {p['fix'][:70]}")
+    print("\nwrote fix_plan.csv")
+
     # TODO: asset criticality (same CVE should rank higher on a prod box)
-    # TODO: group findings that share one fix, like all the old TLS settings
 
 
 if __name__ == "__main__":
